@@ -1,0 +1,28 @@
+{
+    "name": "@termviz/core",
+    "version": "0.1.0",
+    "description": "Core render pipeline for termviz — Mermaid/HTML to PNG with caching",
+    "type": "module",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "scripts": {
+        "build": "tsup",
+        "dev": "tsup --watch",
+        "test": "vitest run",
+        "clean": "rimraf dist"
+    },
+    "dependencies": {
+        "puppeteer": "^21.9.0",
+        "sharp": "^0.33.2"
+    },
+    "devDependencies": {
+        "rimraf": "^5.0.5",
+        "vitest": "^1.2.2"
+    }
+}

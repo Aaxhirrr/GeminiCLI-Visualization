@@ -1,0 +1,37 @@
+flowchart TD
+    Client([Client Request])
+    Gateway[API Gateway]
+    Auth{Authenticated?}
+    RateLimit{Rate Limited?}
+    Router[Service Router]
+
+    UserSvc[User Service]
+    OrderSvc[Order Service]
+    NotifySvc[Notification Service]
+
+    UserDB[(User DB\nPostgres)]
+    OrderDB[(Order DB\nPostgres)]
+    Cache[(Redis Cache)]
+    Queue([Message Queue\nRabbitMQ])
+
+    Client --> Gateway
+    Gateway --> Auth
+    Auth -->|No| Reject([401 Unauthorized])
+    Auth -->|Yes| RateLimit
+    RateLimit -->|Exceeded| TooMany([429 Too Many Requests])
+    RateLimit -->|OK| Router
+
+    Router --> UserSvc
+    Router --> OrderSvc
+
+    UserSvc --> UserDB
+    UserSvc --> Cache
+    OrderSvc --> OrderDB
+    OrderSvc --> Queue
+    Queue --> NotifySvc
+    NotifySvc --> UserSvc
+
+    style Client fill:#6c63ff,color:#fff
+    style Gateway fill:#333,color:#fff
+    style Reject fill:#e74c3c,color:#fff
+    style TooMany fill:#e67e22,color:#fff

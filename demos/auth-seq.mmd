@@ -1,0 +1,28 @@
+sequenceDiagram
+    participant Browser
+    participant API as API Gateway
+    participant Auth as Auth Service
+    participant DB as Database
+    participant Cache
+
+    Browser->>API: POST /auth/login {email, password}
+    API->>Auth: validateCredentials(email, password)
+    Auth->>DB: SELECT user WHERE email = ?
+    DB-->>Auth: user record
+    Auth->>Auth: bcrypt.compare(password, hash)
+    Auth-->>API: {userId, roles}
+    API->>Auth: generateTokens(userId, roles)
+    Auth-->>API: {accessToken, refreshToken}
+    API->>Cache: SET session:{userId} refreshToken TTL=7d
+    Cache-->>API: OK
+    API-->>Browser: 200 {accessToken, refreshToken}
+
+    note over Browser,Cache: Token Refresh Flow
+
+    Browser->>API: POST /auth/refresh {refreshToken}
+    API->>Cache: GET session:{userId}
+    Cache-->>API: storedRefreshToken
+    API->>Auth: rotateTokens(userId, refreshToken)
+    Auth-->>API: {newAccessToken, newRefreshToken}
+    API->>Cache: SET session:{userId} newRefreshToken TTL=7d
+    API-->>Browser: 200 {newAccessToken, newRefreshToken}

@@ -1,0 +1,56 @@
+erDiagram
+    USER {
+        uuid id PK
+        string email UK
+        string password_hash
+        string display_name
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    SESSION {
+        uuid id PK
+        uuid user_id FK
+        string refresh_token
+        timestamp expires_at
+        string ip_address
+        string user_agent
+    }
+
+    PROJECT {
+        uuid id PK
+        uuid owner_id FK
+        string name
+        string slug UK
+        text description
+        boolean is_public
+        timestamp created_at
+    }
+
+    DIAGRAM {
+        uuid id PK
+        uuid project_id FK
+        uuid created_by FK
+        string title
+        string type
+        text spec
+        string cached_png_key
+        int version
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    DIAGRAM_CACHE {
+        string hash_key PK
+        string png_path
+        int width_px
+        int height_px
+        string renderer_version
+        timestamp created_at
+    }
+
+    USER ||--o{ SESSION : "has"
+    USER ||--o{ PROJECT : "owns"
+    PROJECT ||--o{ DIAGRAM : "contains"
+    USER ||--o{ DIAGRAM : "creates"
+    DIAGRAM }o--|| DIAGRAM_CACHE : "cached by"
