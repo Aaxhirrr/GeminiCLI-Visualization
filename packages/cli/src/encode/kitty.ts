@@ -53,8 +53,8 @@ export function encodeKitty(pngBuffer: Buffer, cols = 80, rows = 24): string {
     let offset = 0;
     let isFirst = true;
 
-    // Constrain height to roughly 70% of terminal rows
-    const maxRows = Math.max(1, Math.floor(rows * 0.7));
+    // Constrain height to roughly 50% of terminal rows (max 25)
+    const maxRows = Math.min(Math.max(1, Math.floor(rows * 0.5)), 25);
 
     while (offset < b64.length) {
         const slice = b64.slice(offset, offset + CHUNK_SIZE);
