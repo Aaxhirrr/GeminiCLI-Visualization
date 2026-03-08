@@ -23,7 +23,10 @@ async function getSixelEncoder(): Promise<{ encode: (data: Uint8ClampedArray, wi
  * Resizes to at most `maxHeight` pixels tall before encoding to avoid
  * overflowing the terminal scroll buffer.
  */
-export async function encodeSixel(pngBuffer: Buffer, cols = 80, maxHeight = 600): Promise<string> {
+export async function encodeSixel(pngBuffer: Buffer, cols = 80, rows = 24): Promise<string> {
+    // Dynamic maxHeight: roughly 70% of terminal rows * pixels-per-row estimate (e.g. 15px)
+    const maxHeight = Math.floor(rows * 0.7 * 15);
+
     // Resize: cap height and scale width proportionally
     const resized = await sharp(pngBuffer)
         .resize({ height: maxHeight, withoutEnlargement: true, fit: 'inside' })

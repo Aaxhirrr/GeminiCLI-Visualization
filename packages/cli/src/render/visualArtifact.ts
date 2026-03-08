@@ -66,17 +66,17 @@ export async function renderVisualArtifact(
 
     switch (protocol) {
         case 'kitty': {
-            const output = encodeKitty(pngBuffer, caps.columns);
+            const output = encodeKitty(pngBuffer, caps.columns, caps.rows);
             process.stdout.write(output);
             break;
         }
         case 'iterm2': {
-            const output = encodeIterm2(pngBuffer, caps.columns);
+            const output = encodeIterm2(pngBuffer, caps.columns, caps.rows);
             process.stdout.write(output);
             break;
         }
         case 'sixel': {
-            const output = await encodeSixel(pngBuffer, caps.columns);
+            const output = await encodeSixel(pngBuffer, caps.columns, caps.rows);
             process.stdout.write(output);
             break;
         }

@@ -19,17 +19,21 @@ const BEL = '\x07';
 /**
  * Encode a PNG buffer as an iTerm2 OSC 1337 inline image escape sequence.
  */
-export function encodeIterm2(pngBuffer: Buffer, cols = 80): string {
+export function encodeIterm2(pngBuffer: Buffer, cols = 80, rows = 24): string {
     const b64 = pngBuffer.toString('base64');
     const size = pngBuffer.byteLength;
 
     // Width capped to terminal column count
     const widthSpec = `${Math.min(cols, 200)}`;
 
+    // Height capped to terminal row count (leaving space for prompt)
+    const heightSpec = '70%'; // Percentage of terminal height
+
     const args = [
         `inline=1`,
         `size=${size}`,
         `width=${widthSpec}`,
+        `height=${heightSpec}`,
         `preserveAspectRatio=1`,
     ].join(';');
 
